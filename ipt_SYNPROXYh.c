@@ -79,6 +79,7 @@ free_nskb:
 	kfree_skb(nskb);
 }
 
+// 改SHA1为jhash_3words
 static __u32 check_tcp_syn_cookie_hash(__u32 cookie, __be32 saddr, __be32 daddr,
 				  __be16 sport, __be16 dport, __u32 sseq)
 {
@@ -89,7 +90,7 @@ static __u32 check_tcp_syn_cookie_hash(__u32 cookie, __be32 saddr, __be32 daddr,
 	diff = (count - (cookie >> COOKIEBITS)) & ((__u32) -1 >> COOKIEBITS);
 	if (diff >= MAX_SYNCOOKIE_AGE)
 		return (__u32)-1;
-	printk("#### init:%u   %u\n", jhash_3words(saddr, sport, dport, daddr), jhash_3words(saddr, sport, count-diff, dport));
+	printk("#### check:%u   %u\n", jhash_3words(saddr, sport, dport, daddr), jhash_3words(saddr, sport, count-diff, dport));
 
 	return (cookie -
 		jhash_3words(saddr, sport, count - diff, dport))
@@ -106,6 +107,7 @@ int __cookie_v4_check_hash(const struct iphdr *iph, const struct tcphdr *th,
 	return mssind < ARRAY_SIZE(msstab) ? msstab[mssind] : 0;
 }
 
+// 改SHA1为jhash_3words
 static __u32 secure_tcp_syn_cookie_hash(__be32 saddr, __be32 daddr, __be16 sport,
 				   __be16 dport, __u32 sseq, __u32 data)
 {
